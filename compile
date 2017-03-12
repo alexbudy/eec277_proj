@@ -1,0 +1,4 @@
+#!/bin/bash
+# My first script
+
+gcc -o hello-gl hello-gl.c util.c    -I/usr/include -L/usr/lib     -lGL -lGLEW -lglut -lm
