@@ -204,6 +204,7 @@ static void update_fade_factor(void)
 {
     int milliseconds = glutGet(GLUT_ELAPSED_TIME);
     g_resources.fade_factor = sinf((float)milliseconds * 0.001f) * 0.5f + 0.5f;
+    //printf("%d\n", milliseconds);
     glutPostRedisplay();
 }
 
@@ -235,7 +236,7 @@ static void render(void)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, g_resources.element_buffer);
     glDrawElements(
         GL_TRIANGLE_STRIP,  /* mode */
-        4,                  /* count */
+        6,                  /* count */
         GL_UNSIGNED_SHORT,  /* type */
         (void*)0            /* element array buffer offset */
     );

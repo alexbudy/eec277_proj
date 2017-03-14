@@ -7,9 +7,10 @@ varying vec2 texcoord;
 
 void main()
 {
-    gl_FragColor = mix(
-        texture2D(textures[0], texcoord),
-        texture2D(textures[1], texcoord),
-        fade_factor
-    );
+    gl_FragColor = vec4(texcoord[0], .0, 0, 0.5);
+    //gl_FragColor = mix(
+    //    texture2D(textures[0], texcoord),
+     //   texture2D(textures[1], texcoord),
+      //  fade_factor
+   // );
 }
