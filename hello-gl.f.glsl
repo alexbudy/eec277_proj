@@ -10,12 +10,12 @@ void main()
 {
     int x = 0;
 
-    while ( x < 10) {
+    while ( x < 1000) {
         float temp = atan(x);
         x++;
     }    
 
-    gl_FragColor = vec4(texcoord[0], .0, 0, 0.5);
+    gl_FragColor = vec4(.0, 1.0, 0, 0.5);
     //gl_FragColor = mix(
     //    texture2D(textures[0], texcoord),
      //   texture2D(textures[1], texcoord),

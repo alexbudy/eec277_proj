@@ -65,6 +65,9 @@ typedef struct
   size_t triangleLimit;       /* set by -tl NNNN  */
   size_t vertexBufLimit;      /* set by -vl NNNN */
 
+  int nFramesLimit;
+  int limitByFrames;
+
 
   int    outlineMode;         /* set by -line */
   TriangleType  triangleType;
@@ -145,6 +148,13 @@ parseArgs(int argc,
           argc--;
           myAppState->testDurationSeconds = atof(argv[i]);
         }
+      else if (strcmp(argv[i], "-nf") == 0) 
+      {
+        i++;
+        argc--;
+        myAppState->nFramesLimit = atoi(argv[i]);
+        myAppState->limitByFrames = 1;
+      }
       else if (strcmp(argv[i],"-tl") == 0)
         {
           i++;
@@ -471,22 +481,51 @@ wesTriangleRateBenchmark(AppState *as)
 
   startTime = endTime = glfwGetTime();
 
-  while ((endTime - startTime) < testDurationSeconds)
-    {
+   if (SCREENSHOT_MODE == 1) {
+        /* screenshot mode won't work with -retained */
+        /* Clear the screen */
+        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glDrawArrays(GL_TRIANGLES, 0, dispatchVertexCount);
+        glDrawArrays(GL_TRIANGLES, 0, dispatchVertexCount);
+        fprintf(stderr," You have screenshot mode enabled! \n");
+        fflush(stderr);
+        sleep(5);
+   } else if (myAppState.limitByFrames == 1) {
+      while (nFrames < myAppState.nFramesLimit)
+        {
 
-      glDrawArrays(GL_TRIANGLES, 0, dispatchVertexCount);
+          glDrawArrays(GL_TRIANGLES, 0, dispatchVertexCount);
 
-      glTranslatef(r/2.0, r/2.0, 0.0F);
-      glRotatef(0.01F, 0.0F, 0.0F, 1.0F);
-      glTranslatef(-r/2.0, -r/2.0, 0.0F);
+          glTranslatef(r/2.0, r/2.0, 0.0F);
+          glRotatef(0.01F, 0.0F, 0.0F, 1.0F);
+          glTranslatef(-r/2.0, -r/2.0, 0.0F);
 
-      endTime = glfwGetTime();
+          endTime = glfwGetTime();
 
-      nFrames++;
-      totalTris += dispatchTriangles;
-      totalVerts += as->computedVertsPerArrayCall;
+          nFrames++;
+          totalTris += dispatchTriangles;
+          totalVerts += as->computedVertsPerArrayCall;
+        }
+        
+   } else {
+      while ((endTime - startTime) < testDurationSeconds)
+        {
+          glDrawArrays(GL_TRIANGLES, 0, dispatchVertexCount);
 
-    }
+          glTranslatef(r/2.0, r/2.0, 0.0F);
+          glRotatef(0.01F, 0.0F, 0.0F, 1.0F);
+          glTranslatef(-r/2.0, -r/2.0, 0.0F);
+
+          endTime = glfwGetTime();
+
+          nFrames++;
+          totalTris += dispatchTriangles;
+          totalVerts += as->computedVertsPerArrayCall;
+        }
+
+  }
+
 
   glFinish();
   endTime = glfwGetTime();
@@ -519,6 +558,7 @@ wesTriangleRateBenchmark(AppState *as)
 
   printf("verts/frame = %d \n", dispatchVertexCount);
   printf("nframes = %d \n", nFrames);
+  printf("Elapsed time:\t%f(s)\n ", elapsedTimeSeconds);
 
   free((void *)baseVerts);
   free((void *)baseColors);
@@ -631,6 +671,8 @@ main(int argc, char **argv)
   myAppState.triangleAreaInPixels=DEFAULT_TRIANGLE_AREA;
   myAppState.triangleType = DEFAULT_TRIANGLE_TYPE;
   myAppState.testDurationSeconds=DEFAULT_TEST_DURATION_SECONDS;
+  myAppState.nFramesLimit=20;
+  myAppState.limitByFrames=0;
   myAppState.imgWidth = DEFAULT_WIN_WIDTH;
   myAppState.imgHeight = DEFAULT_WIN_HEIGHT;
   myAppState.triangleLimit = DEFAULT_TRIANGLE_LIMIT;
@@ -665,9 +707,9 @@ main(int argc, char **argv)
   printInfo(window);
 
   GLuint program = glCreateProgram();
-  GLuint vertexshader = make_shader(GL_VERTEX_SHADER, "hello-gl.v.glsl");
+  //GLuint vertexshader = make_shader(GL_VERTEX_SHADER, "hello-gl.v.glsl");
   GLuint fragmentshader = make_shader(GL_FRAGMENT_SHADER, "hello-gl.f.glsl");
-  glAttachShader(program, vertexshader);
+  //glAttachShader(program, vertexshader);
   glAttachShader(program, fragmentshader);
   glLinkProgram(program);
 
