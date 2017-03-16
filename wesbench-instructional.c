@@ -158,13 +158,9 @@ parseArgs(int argc,
         myAppState->limitByFrames = 1;
       }
       else if (strcmp(argv[i], "-frag") == 0) {
-        i++;
-        argc--;
         myAppState->useFragShader = 1;
       }
       else if (strcmp(argv[i], "-vert") == 0) {
-        i++;
-        argc--;
         myAppState->useVertShader = 1;
       }
       else if (strcmp(argv[i],"-tl") == 0)
@@ -724,12 +720,15 @@ main(int argc, char **argv)
 
   GLuint program = glCreateProgram();
   if (myAppState.useFragShader == 1) {
-    GLuint fragmentshader = make_shader(GL_FRAGMENT_SHADER, "hello-gl.f.glsl");
-    glAttachShader(program, fragmentshader);
+      printf("using frag shader\n");
+      GLuint fragmentshader = make_shader(GL_FRAGMENT_SHADER, "hello-gl.f.glsl");
+      glAttachShader(program, fragmentshader);
   } 
+
   if (myAppState.useVertShader == 1) {
-    GLuint vertexshader = make_shader(GL_VERTEX_SHADER, "hello-gl.v.glsl");
-    glAttachShader(program, vertexshader);
+      printf("using vert shader\n");
+      GLuint vertexshader = make_shader(GL_VERTEX_SHADER, "hello-gl.v.glsl");
+      glAttachShader(program, vertexshader);
   }
 
   glLinkProgram(program);

@@ -11,7 +11,7 @@ void main()
     //texcoord = position * vec2(0.5) + vec2(0.5);
 
     int x = 0;  
-    while ( x < 1000) {
+    while ( x < 10000) {
         float temp = atan(x);    
         x++;
     }

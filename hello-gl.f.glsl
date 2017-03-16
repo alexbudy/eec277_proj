@@ -14,7 +14,7 @@ void main()
     //int m = int(mod(x*1000.0, 2.0));
 
      int i = 0;
-     while (i < 1000) {
+     while (i < 10) {
         float tmp = atan(i);
 
         i++;
