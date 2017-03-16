@@ -4,28 +4,27 @@ uniform float fade_factor;
 uniform sampler2D textures[2];
 
 varying vec2 texcoord;
-//layout (binding = 1, offset = 0) uniform atomic_uint atRed;
 
 
 void main()
 {
     float x = texcoord.x;
     float y = texcoord.y;
-    //int m = int(mod(x*1000.0, 2.0));
 
-     int i = 0;
-     while (i < 10) {
-        float tmp = atan(i);
 
-        i++;
-    }  
-    //atomicCounterIncrement(atRed);
-    gl_FragColor = vec4(0, 1.0, 0, 0.5);
+    float xx = gl_FragCoord.x;
+    int m = int(mod(xx, 2.0));
 
-    //if (m==1) 
-    //    gl_FragColor = vec4(.0, 1.0, 0, 0.5);               //green
-    //else
-    //    gl_FragColor = vec4(0, 0, 1.0, 0.5);                //blue
+    if (m == 0) {
+        gl_FragColor = vec4(0, 1.0, 0.0, 0.5);
+    } else {
+        gl_FragColor = vec4(1.0, .0, 0, 0.5);
+        int i = 0;
+        while (i<1) {
+            
+            i++;
+        }
+    }
 }
 
 int mod(float a, float b) {
