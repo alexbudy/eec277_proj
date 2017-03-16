@@ -67,6 +67,8 @@ typedef struct
 
   int nFramesLimit;
   int limitByFrames;
+  int useFragShader;
+  int useVertShader;
 
 
   int    outlineMode;         /* set by -line */
@@ -154,6 +156,16 @@ parseArgs(int argc,
         argc--;
         myAppState->nFramesLimit = atoi(argv[i]);
         myAppState->limitByFrames = 1;
+      }
+      else if (strcmp(argv[i], "-frag") == 0) {
+        i++;
+        argc--;
+        myAppState->useFragShader = 1;
+      }
+      else if (strcmp(argv[i], "-vert") == 0) {
+        i++;
+        argc--;
+        myAppState->useVertShader = 1;
       }
       else if (strcmp(argv[i],"-tl") == 0)
         {
@@ -680,6 +692,8 @@ main(int argc, char **argv)
   myAppState.triangleLimit = DEFAULT_TRIANGLE_LIMIT;
   myAppState.vertexBufLimit = DEFAULT_VERTEXBUF_LIMIT;
   myAppState.outlineMode = DEFAULT_OUTLINE_MODE_BOOL;
+  myAppState.useFragShader = 0;
+  myAppState.useVertShader = 0;
 
   glfwSetErrorCallback(error_callback);
 
@@ -709,10 +723,15 @@ main(int argc, char **argv)
   printInfo(window);
 
   GLuint program = glCreateProgram();
-  GLuint vertexshader = make_shader(GL_VERTEX_SHADER, "hello-gl.v.glsl");
-  glAttachShader(program, vertexshader);
-  //GLuint fragmentshader = make_shader(GL_FRAGMENT_SHADER, "hello-gl.f.glsl");
-  //glAttachShader(program, fragmentshader);
+  if (myAppState.useFragShader == 1) {
+    GLuint fragmentshader = make_shader(GL_FRAGMENT_SHADER, "hello-gl.f.glsl");
+    glAttachShader(program, fragmentshader);
+  } 
+  if (myAppState.useVertShader == 1) {
+    GLuint vertexshader = make_shader(GL_VERTEX_SHADER, "hello-gl.v.glsl");
+    glAttachShader(program, vertexshader);
+  }
+
   glLinkProgram(program);
 
   Init();
