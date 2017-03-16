@@ -477,6 +477,7 @@ wesTriangleRateBenchmark(AppState *as)
   glColorPointer(3, GL_FLOAT, 0, (const GLvoid *)dispatchColors);
   glEnableClientState(GL_COLOR_ARRAY);
 
+
   glFinish();                 /* make sure all setup is finished */
 
   startTime = endTime = glfwGetTime();
@@ -559,6 +560,7 @@ wesTriangleRateBenchmark(AppState *as)
   printf("verts/frame = %d \n", dispatchVertexCount);
   printf("nframes = %d \n", nFrames);
   printf("Elapsed time:\t%f(s)\n ", elapsedTimeSeconds);
+  printf("Dispatched Triangles Per Frame: %d \n", dispatchTriangles);
 
   free((void *)baseVerts);
   free((void *)baseColors);
@@ -707,10 +709,10 @@ main(int argc, char **argv)
   printInfo(window);
 
   GLuint program = glCreateProgram();
-  //GLuint vertexshader = make_shader(GL_VERTEX_SHADER, "hello-gl.v.glsl");
-  GLuint fragmentshader = make_shader(GL_FRAGMENT_SHADER, "hello-gl.f.glsl");
-  //glAttachShader(program, vertexshader);
-  glAttachShader(program, fragmentshader);
+  GLuint vertexshader = make_shader(GL_VERTEX_SHADER, "hello-gl.v.glsl");
+  glAttachShader(program, vertexshader);
+  //GLuint fragmentshader = make_shader(GL_FRAGMENT_SHADER, "hello-gl.f.glsl");
+  //glAttachShader(program, fragmentshader);
   glLinkProgram(program);
 
   Init();
@@ -768,9 +770,22 @@ void printInfo (GLFWwindow * window) {
 
 void runBenchmark(void) {
 
-      wesTriangleRateBenchmark(&myAppState);
+     if (0) { // run area test here
+			int powCounter = 1;
+			while (powCounter <= 17) { // 2^17 = 131K
+				myAppState.triangleAreaInPixels = pow(2, powCounter);
+				wesTriangleRateBenchmark(&myAppState);
+				
+      				fprintf(stderr," WesBench: area=%2.1f px, tri rate = %3.2f Mtri/sec, vertex rate=%3.2f Mverts/sec, fill rate = %4.2f Mpix/sec, verts/bucket=%zu, indices/bucket=%zu\n", myAppState.triangleAreaInPixels, myAppState.computedMTrisPerSecond, myAppState.computedMVertexOpsPerSecond, myAppState.computedMFragsPerSecond, myAppState.computedVertsPerArrayCall, myAppState.computedIndicesPerArrayCall);
 
-      fprintf(stderr," WesBench: area=%2.1f px, tri rate = %3.2f Mtri/sec, vertex rate=%3.2f Mverts/sec, fill rate = %4.2f Mpix/sec, verts/bucket=%zu, indices/bucket=%zu\n", myAppState.triangleAreaInPixels, myAppState.computedMTrisPerSecond, myAppState.computedMVertexOpsPerSecond, myAppState.computedMFragsPerSecond, myAppState.computedVertsPerArrayCall, myAppState.computedIndicesPerArrayCall);
+				powCounter++;
+			}
+
+     } else {
+      		wesTriangleRateBenchmark(&myAppState);
+
+      		fprintf(stderr," WesBench: area=%2.1f px, tri rate = %3.2f Mtri/sec, vertex rate=%3.2f Mverts/sec, fill rate = %4.2f Mpix/sec, verts/bucket=%zu, indices/bucket=%zu\n", myAppState.triangleAreaInPixels, myAppState.computedMTrisPerSecond, myAppState.computedMVertexOpsPerSecond, myAppState.computedMFragsPerSecond, myAppState.computedVertsPerArrayCall, myAppState.computedIndicesPerArrayCall);
+     } 
 
   glfwTerminate();
   exit(0);
